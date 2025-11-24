@@ -1,65 +1,135 @@
-import Image from "next/image";
+import Link from "next/link";
+import styles from "./page.module.css";
+
+const highlights = [
+  {
+    title: "Shop One-of-a-kind Finds",
+    body: "Discover hand-carved bowls, botanical dyes, and limited collections from artisans across the globe.",
+  },
+  {
+    title: "Meet the Makers",
+    body: "Follow artisan profiles, learn their process, and request bespoke pieces straight from their studios.",
+  },
+  {
+    title: "Celebrate Slow Craft",
+    body: "Browse curated themes each week—earthy tablescapes, cozy textiles, or bold statement jewelry.",
+  },
+];
+
+const featuredCategories = [
+  { name: "Jewelry", count: 42 },
+  { name: "Ceramics", count: 35 },
+  { name: "Textiles", count: 28 },
+  { name: "Woodwork", count: 18 },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className={styles.home}>
+      <section className={styles.hero}>
+        <p className={styles.heroHeading}>Handcrafted Haven</p>
+        <div className={styles.heroContent}>
+          <div className={styles.heroText}>
+            <h1 className={styles.heroTitle}>
+              A curated marketplace for soulful objects and the artists who make
+              them.
+            </h1>
+            <p className={styles.heroDescription}>
+              Build your dream collection by supporting independent artisans.
+              Track commissions, follow studios you love, and connect with a
+              community that values the handmade.
+            </p>
+            <div className={styles.heroActions}>
+              <Link href="/products" className={styles.primaryButton}>
+                Browse the catalog
+              </Link>
+              <Link href="/profiles" className={styles.secondaryButton}>
+                Meet featured artisans
+              </Link>
+            </div>
+          </div>
+          <div className={styles.heroHighlight}>
+            <p className={styles.highlightSubtitle}>Weekly Drop</p>
+            <h2 className={styles.highlightTitle}>
+              Clay Stories by Solis Studio
+            </h2>
+            <p className={styles.highlightDescription}>
+              12 sculptural vessels inspired by desert botanicals. Each piece is
+              signed, fired using solar kilns, and ships with a certificate of
+              authenticity.
+            </p>
+            <div className={styles.highlightMeta}>
+              <span>12 pieces</span>
+              <span aria-hidden="true">•</span>
+              <span>Ships worldwide</span>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className={styles.twoColumn}>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h3 className={styles.cardTitle}>Explore by category</h3>
+            <Link href="/products" className={styles.cardLink}>
+              View all
+            </Link>
+          </div>
+          <ul className={styles.categoryList}>
+            {featuredCategories.map((category) => (
+              <li key={category.name} className={styles.categoryItem}>
+                <span>{category.name}</span>
+                <span className={styles.categoryCount}>
+                  {category.count} listings
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </main>
+
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>What makes us different</h3>
+          <div className={styles.highlightList}>
+            {highlights.map((item) => (
+              <article key={item.title} className={styles.highlightCard}>
+                <h4 className={styles.highlightCardTitle}>{item.title}</h4>
+                <p className={styles.highlightCardBody}>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.spotlight}>
+        <div className={styles.spotlightGrid}>
+          <div className={styles.spotlightDetails}>
+            <p className={styles.spotlightLabel}>Artisan spotlight</p>
+            <h3 className={styles.spotlightTitle}>
+              The Santos Textile Cooperative
+            </h3>
+            <p className={styles.spotlightBody}>
+              A fourth-generation weaving collective in Oaxaca using natural
+              cochineal dyes. Follow their process, reserve limited drops, and
+              commission your own heirloom rugs.
+            </p>
+            <div className={styles.spotlightTags}>
+              <span className={styles.spotlightTagClay}>8 master weavers</span>
+              <span className={styles.spotlightTagOlive}>
+                Climate-positive studio
+              </span>
+            </div>
+          </div>
+          <div className={styles.workshopCard}>
+            <p className={styles.workshopLabel}>Upcoming workshop</p>
+            <h4 className={styles.workshopTitle}>Alive with Texture</h4>
+            <p className={styles.workshopBody}>
+              Join live studio sessions to learn traditional warp techniques,
+              plant-based dye tutorials, and mindful sourcing practices.
+            </p>
+            <button className={styles.workshopButton}>Reserve a seat</button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
