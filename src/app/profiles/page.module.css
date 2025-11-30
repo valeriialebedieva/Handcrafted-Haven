@@ -92,3 +92,22 @@
   padding: 0.4rem 0.8rem;
 }
 
+.viewProfileLink {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--color-deep-clay);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.viewProfileLink:hover {
+  color: var(--color-olive);
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-gray);
+}
+

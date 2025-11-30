@@ -1,0 +1,149 @@
+.artisanProfile {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.profileHeader {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #dadada;
+}
+
+.profileName {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2e2f32;
+  margin: 0;
+}
+
+.profileLocation {
+  color: #7a7c80;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.profileSpecialty {
+  color: #b65c3a;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.profileStory {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #dadada;
+  border-radius: 8px;
+}
+
+.profileStory h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: #2e2f32;
+  margin-bottom: 0.75rem;
+}
+
+.profileStory p {
+  color: #2e2f32;
+  line-height: 1.6;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.tag {
+  border-radius: 999px;
+  border: 1px solid #dadada;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  color: #7a7c80;
+}
+
+.productsSection {
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: #2e2f32;
+  margin-bottom: 1.5rem;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.productCard {
+  background-color: #ffffff;
+  border: 1px solid #dadada;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.productThumb {
+  height: 150px;
+  background-color: #f7f3ee;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7a7c80;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.productDetails {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.productTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: #2e2f32;
+  margin-bottom: 0.5rem;
+}
+
+.productDescription {
+  color: #7a7c80;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.productMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #2e2f32;
+}
+
+.productButton {
+  display: inline-block;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  background-color: #b65c3a;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.productButton:hover {
+  background-color: #a04f2f;
+}
+
