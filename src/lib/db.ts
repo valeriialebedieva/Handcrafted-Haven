@@ -1,11 +1,28 @@
 // MongoDB connection and database utilities
-import { MongoClient, Db, Collection } from 'mongodb';
+import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/handcrafted-haven';
+const uri =
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/handcrafted-haven';
 const dbName = process.env.MONGODB_DB || 'handcrafted-haven';
 
+const globalWithMongo = globalThis as typeof globalThis & {
+  _mongoClientPromise?: Promise<MongoClient>;
+};
+
 let client: MongoClient | null = null;
+let clientPromise: Promise<MongoClient>;
 let db: Db | null = null;
+let indexesInitialized = false;
+
+if (!globalWithMongo._mongoClientPromise) {
+  client = new MongoClient(uri, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+  });
+  globalWithMongo._mongoClientPromise = client.connect();
+}
+
+clientPromise = globalWithMongo._mongoClientPromise;
 
 export async function connectToDatabase(): Promise<Db> {
   if (db) {
@@ -13,15 +30,40 @@ export async function connectToDatabase(): Promise<Db> {
   }
 
   try {
-    client = new MongoClient(uri);
-    await client.connect();
+    client = await clientPromise;
     db = client.db(dbName);
-    console.log('Connected to MongoDB');
+    await initializeIndexes(db);
     return db;
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
     throw error;
   }
+}
+
+async function initializeIndexes(database: Db) {
+  if (indexesInitialized) {
+    return;
+  }
+
+  await Promise.all([
+    database.collection<Product>('products').createIndexes([
+      { key: { category: 1 } },
+      { key: { artisanId: 1 } },
+      { key: { status: 1 } },
+      { key: { name: 'text', description: 'text', artisan: 'text' } },
+    ]),
+    database.collection<Review>('reviews').createIndexes([
+      { key: { productId: 1 } },
+      { key: { userId: 1 } },
+      { key: { createdAt: -1 } },
+    ]),
+    database.collection<User>('users').createIndexes([
+      { key: { email: 1 }, unique: true },
+      { key: { role: 1 } },
+    ]),
+  ]);
+
+  indexesInitialized = true;
 }
 
 export async function getCollection<T>(collectionName: string): Promise<Collection<T>> {
@@ -34,13 +76,13 @@ export async function closeConnection(): Promise<void> {
     await client.close();
     client = null;
     db = null;
-    console.log('MongoDB connection closed');
+    globalWithMongo._mongoClientPromise = undefined;
   }
 }
 
 // Database models/schemas (TypeScript interfaces)
 export interface User {
-  _id?: string;
+  _id?: ObjectId;
   email: string;
   password: string;
   name: string;
@@ -57,7 +99,7 @@ export interface User {
 }
 
 export interface Product {
-  _id?: string;
+  _id?: ObjectId;
   name: string;
   price: number;
   category: string;
@@ -72,7 +114,7 @@ export interface Product {
 }
 
 export interface Review {
-  _id?: string;
+  _id?: ObjectId;
   productId: string;
   productName: string;
   userId: string;

@@ -1,21 +1,45 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import styles from "./page.module.css";
 
-const sampleReviews = [
-  {
-    product: "Clay Stories Vase",
-    reviewer: "Anika R.",
-    rating: 5,
-    comment: "Arrived perfectly packaged and the glaze is even richer in person!",
-  },
-  {
-    product: "Olivewood Board",
-    reviewer: "Theo L.",
-    rating: 4,
-    comment: "Beautiful patterning. Would love an option for a larger size.",
-  },
-];
+interface Review {
+  _id: string;
+  productId: string;
+  productName: string;
+  reviewer: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 export default function ReviewsPage() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch("/api/reviews");
+      if (response.ok) {
+        const data = await response.json();
+        setReviews(data.reviews || []);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className={styles.loading}>Loading reviews...</div>;
+  }
+
   return (
     <div className={styles.reviews}>
       <section className={styles.intro}>
@@ -26,19 +50,27 @@ export default function ReviewsPage() {
         </p>
       </section>
       <section className={styles.grid}>
-        {sampleReviews.map((review) => (
-          <article key={review.product} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <span>
-                {review.product} · {review.reviewer}
-              </span>
-              <span className={styles.stars}>{"★".repeat(review.rating)}</span>
-            </div>
-            <p className={styles.cardBody}>{review.comment}</p>
-          </article>
-        ))}
+        {reviews.length > 0 ? (
+          reviews.map((review) => (
+            <article key={review._id} className={styles.card}>
+              <div className={styles.cardHeader}>
+                <Link href={`/products/${review.productId}`}>
+                  <span>
+                    {review.productName} · {review.reviewer}
+                  </span>
+                </Link>
+                <span className={styles.stars}>{"★".repeat(review.rating)}</span>
+              </div>
+              <p className={styles.cardBody}>{review.comment}</p>
+              <div className={styles.cardFooter}>
+                {new Date(review.createdAt).toLocaleDateString()}
+              </div>
+            </article>
+          ))
+        ) : (
+          <p className={styles.noReviews}>No reviews yet. Be the first to review a product!</p>
+        )}
       </section>
     </div>
   );
 }
-

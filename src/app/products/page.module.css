@@ -354,3 +354,21 @@
   background-color: var(--color-soft-beige);
 }
 
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-gray);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-gray);
+}
+
+.productThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+

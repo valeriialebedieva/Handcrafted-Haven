@@ -54,3 +54,34 @@
   color: var(--color-gray);
 }
 
+.cardFooter {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-gray);
+}
+
+.cardHeader a {
+  text-decoration: none;
+  color: var(--color-charcoal);
+}
+
+.cardHeader a:hover {
+  color: var(--color-deep-clay);
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-gray);
+}
+
+.noReviews {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-gray);
+}
+
+.stars {
+  color: var(--color-deep-clay);
+}
+

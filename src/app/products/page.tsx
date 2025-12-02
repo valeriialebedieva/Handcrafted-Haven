@@ -1,70 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 type Product = {
-  id: number;
+  _id: string;
   name: string;
   price: number;
   category: string;
   artisan: string;
+  artisanId: string;
   description: string;
   image: string;
 };
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Sunrise Coil Basket",
-    price: 68,
-    category: "Textiles",
-    artisan: "Santos Collective",
-    description:
-      "Hand-woven with maguey fibers and botanical dyes in warm clay tones.",
-    image: "/window.svg",
-  },
-  {
-    id: 2,
-    name: "Aurora Brass Earrings",
-    price: 120,
-    category: "Jewelry",
-    artisan: "Luna Atelier",
-    description:
-      "Lightweight brass forms finished with a matte protective seal.",
-    image: "/globe.svg",
-  },
-  {
-    id: 3,
-    name: "Terracotta Tea Set",
-    price: 180,
-    category: "Ceramics",
-    artisan: "Valle Kilns",
-    description: "Wheel-thrown tea pot with two cups, glazed in soft beige.",
-    image: "/file.svg",
-  },
-  {
-    id: 4,
-    name: "Olivewood Serving Board",
-    price: 92,
-    category: "Woodwork",
-    artisan: "Atelier Mar",
-    description:
-      "Sustainably sourced olivewood finished with food-safe mineral oil.",
-    image: "/next.svg",
-  },
-  {
-    id: 5,
-    name: "Botanical Dye Kit",
-    price: 58,
-    category: "Textiles",
-    artisan: "Field Notes Studio",
-    description:
-      "Starter kit with cochineal, marigold, and indigo powders plus guide.",
-    image: "/vercel.svg",
-  },
-];
 
 const priceFilters = [
   { label: "All prices", min: 0, max: Infinity },
@@ -92,9 +41,29 @@ const classNames = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(" ");
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("/api/products?status=published");
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products || []);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const availableCategories = Array.from(
     new Set(products.map((product) => product.category)),
@@ -108,16 +77,21 @@ export default function ProductsPage() {
         ? product.category === selectedCategory
         : true;
 
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.artisan.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesPrice =
         product.price >= priceBounds.min && product.price <= priceBounds.max;
 
       return matchesCategory && matchesSearch && matchesPrice;
     });
-  }, [searchTerm, selectedCategory, selectedPriceIndex]);
+  }, [products, searchTerm, selectedCategory, selectedPriceIndex]);
+
+  if (loading) {
+    return <div className={styles.loading}>Loading products...</div>;
+  }
 
   return (
     <div className={styles.catalog}>
@@ -195,13 +169,21 @@ export default function ProductsPage() {
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
             </div>
-            <button className={styles.saveSearchButton}>Save search</button>
+            <Link href="/search" className={styles.saveSearchButton}>
+              Advanced Search
+            </Link>
           </div>
 
           <div className={styles.productGrid}>
             {filteredProducts.map((product) => (
-              <article key={product.id} className={styles.productCard}>
-                <div className={styles.productThumb}>{product.category}</div>
+              <article key={product._id} className={styles.productCard}>
+                <div className={styles.productThumb}>
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} />
+                  ) : (
+                    product.category
+                  )}
+                </div>
                 <div className={styles.productDetails}>
                   <h3 className={styles.productTitle}>{product.name}</h3>
                   <p className={styles.productDescription}>
@@ -211,13 +193,18 @@ export default function ProductsPage() {
                 <div className={styles.productMeta}>
                   <span>${product.price}</span>
                   <Link
-                    href={`/profiles?studio=${encodeURIComponent(product.artisan)}`}
+                    href={`/profiles/artisan/${encodeURIComponent(product.artisan)}`}
                     className={styles.productArtisan}
                   >
                     {product.artisan}
                   </Link>
                 </div>
-                <button className={styles.productButton}>View details</button>
+                <Link
+                  href={`/products/${product._id}`}
+                  className={styles.productButton}
+                >
+                  View details
+                </Link>
               </article>
             ))}
             {filteredProducts.length === 0 && (
@@ -247,7 +234,7 @@ export default function ProductsPage() {
               Launch your shop, publish lookbooks, and manage commissions with
               secure payouts.
             </p>
-            <Link href="/artisans" className={styles.becomeLink}>
+            <Link href="/auth/signup" className={styles.becomeLink}>
               Start onboarding
             </Link>
           </div>
@@ -256,4 +243,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-
